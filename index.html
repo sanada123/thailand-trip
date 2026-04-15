@@ -373,8 +373,8 @@
     
     <div id="sent-msg" style="display:none; text-align:center; margin-top:16px; padding:16px; background:#10b98122; border-radius:12px; border:1px solid #10b98144;">
       <div style="font-size:24px; margin-bottom:8px;">🎉</div>
-      <div style="font-size:15px; font-weight:700; color:#34d399;">הבחירות נשלחו בהצלחה!</div>
-      <div style="font-size:13px; color:#94a3b8; margin-top:6px;">ניצור איתכם קשר לסגירת ההזמנה</div>
+      <div style="font-size:15px; font-weight:700; color:#34d399;">הבחירות נשלחו בהצלחה! ✅</div>
+      <div style="font-size:13px; color:#94a3b8; margin-top:6px;">קיבלנו את הבחירות שלכם — נחזור אליכם בהקדם</div>
     </div>
   </div>
 
@@ -440,19 +440,40 @@ function updateSummary() {
 }
 
 function sendChoices() {
-  const msg = '🇹🇭 *בחירות מלון — תאילנד 2026*\n\n' +
-    '🏝️ *סמואי:* ' + (choices.samui ? choices.samui.name + ' (' + choices.samui.total + ')' : 'לא נבחר') + '\n' +
-    '🌊 *פוקט:* ' + (choices.phuket ? choices.phuket.name + ' (' + choices.phuket.total + ')' : 'לא נבחר') + '\n\n' +
-    '✈️ טיסות פנימיות: $978\n' +
-    '💰 סה"כ הערכה: ' + document.getElementById('sum-grand-total').textContent;
+  const msg = '🇹🇭 בחירות מלון — תאילנד 2026\n\n' +
+    '👫 סאמר & רוסול\n\n' +
+    '🏝️ סמואי: ' + (choices.samui ? choices.samui.name : 'לא נבחר') + '\n' +
+    '🌊 פוקט: ' + (choices.phuket ? choices.phuket.name : 'לא נבחר') + '\n\n' +
+    '📅 22-25.04 סמואי | 25.04-02.05 פוקט\n' +
+    '✈️ טיסות פנימיות: $978';
   
-  const encoded = encodeURIComponent(msg);
-  const waUrl = 'https://wa.me/972544507325?text=' + encoded;
+  const btn = document.querySelector('.send-btn');
+  btn.textContent = '⏳ שולח...';
+  btn.disabled = true;
   
-  document.querySelector('.send-btn').style.display = 'none';
-  document.getElementById('sent-msg').style.display = 'block';
-  
-  setTimeout(() => { window.open(waUrl, '_blank'); }, 500);
+  fetch('https://api.telegram.org/bot8669198807:AAHlG_PUExqVHvsZqKIXeV-qIDzPhl0TSEY/sendMessage', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: 422035227,
+      text: msg,
+      parse_mode: 'HTML'
+    })
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (d.ok) {
+      btn.style.display = 'none';
+      document.getElementById('sent-msg').style.display = 'block';
+    } else {
+      btn.textContent = '❌ שגיאה — נסו שוב';
+      btn.disabled = false;
+    }
+  })
+  .catch(() => {
+    btn.textContent = '❌ שגיאה — נסו שוב';
+    btn.disabled = false;
+  });
 }
 </script>
 
