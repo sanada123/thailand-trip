@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🇹🇭 תאילנד 2026 — הצעת מסלול</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, 'Heebo', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+  
+  .header { 
+    background: linear-gradient(135deg, #0ea5e9, #6366f1, #ec4899);
+    padding: 40px 20px 28px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: linear-gradient(transparent, #0f172a); }
+  .header .agent-badge { 
+    display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 14px;
+    border-radius: 20px; font-size: 11px; margin-bottom: 12px; backdrop-filter: blur(10px);
+  }
+  .header h1 { font-size: 26px; margin-bottom: 4px; }
+  .header .sub { font-size: 14px; opacity: 0.85; }
+  .header .dates { 
+    display: inline-block; margin-top: 12px; background: rgba(255,255,255,0.15);
+    padding: 6px 16px; border-radius: 20px; font-size: 13px;
+  }
+  
+  .container { max-width: 480px; margin: 0 auto; padding: 0 16px 32px; }
+  
+  /* Steps indicator */
+  .steps { display: flex; justify-content: center; gap: 8px; margin-top: 24px; margin-bottom: 8px; }
+  .step-dot { width: 10px; height: 10px; border-radius: 50%; background: #334155; transition: all 0.3s; }
+  .step-dot.active { background: #0ea5e9; width: 28px; border-radius: 5px; }
+  .step-dot.done { background: #10b981; }
+  .step-label { text-align: center; font-size: 12px; color: #64748b; margin-bottom: 20px; }
+  
+  /* Sections */
+  .section { display: none; }
+  .section.active { display: block; }
+  
+  .section-title { 
+    font-size: 18px; font-weight: 700; margin: 20px 0 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title .emoji { font-size: 22px; }
+  
+  .card {
+    background: #1e293b; border: 2px solid #334155; border-radius: 16px;
+    padding: 16px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s;
+    position: relative;
+  }
+  .card:active { transform: scale(0.98); }
+  .card.selected { border-color: #0ea5e9; background: #0ea5e90d; }
+  .card.selected::after {
+    content: '✓'; position: absolute; top: 12px; left: 12px;
+    background: #0ea5e9; color: white; width: 24px; height: 24px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+  }
+  
+  .hotel-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .hotel-name { font-size: 16px; font-weight: 700; }
+  .hotel-stars { color: #fbbf24; font-size: 12px; margin-top: 2px; }
+  .hotel-badge { font-size: 11px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .badge-luxury { background: #7c3aed22; color: #a78bfa; border: 1px solid #7c3aed44; }
+  .badge-value { background: #0ea5e922; color: #38bdf8; border: 1px solid #0ea5e944; }
+  
+  .hotel-prices { display: flex; gap: 16px; margin-top: 10px; }
+  .price-label { font-size: 11px; color: #64748b; }
+  .price-value { font-size: 18px; font-weight: 700; color: #f1f5f9; }
+  .price-value.total { color: #0ea5e9; }
+  
+  .hotel-features { font-size: 12px; color: #94a3b8; margin-top: 8px; line-height: 1.6; }
+  
+  .booking-link {
+    display: inline-block; margin-top: 10px; font-size: 12px; color: #0ea5e9;
+    text-decoration: none; padding: 4px 0;
+  }
+  .booking-link:hover { text-decoration: underline; }
+  
+  /* Flight cards */
+  .flight-card {
+    background: #1e293b; border-radius: 16px; padding: 14px;
+    margin-bottom: 8px; border: 1px solid #334155;
+  }
+  .flight-row { display: flex; justify-content: space-between; align-items: center; }
+  .flight-route { font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+  .flight-arrow { color: #0ea5e9; margin: 0 6px; }
+  .flight-detail { font-size: 11px; color: #94a3b8; }
+  .flight-time { font-size: 14px; font-weight: 600; color: #0ea5e9; }
+  .flight-date { font-size: 12px; color: #cbd5e1; margin-top: 2px; }
+  .flight-code { font-size: 10px; background: #334155; padding: 2px 8px; border-radius: 6px; color: #94a3b8; display: inline-block; margin-top: 4px; }
+  
+  .warning {
+    background: #422006; border: 1px solid #92400e; border-radius: 12px;
+    padding: 12px 14px; margin-top: 10px; font-size: 13px; color: #fbbf24;
+  }
+  .warning strong { color: #fcd34d; }
+  
+  .dest-header {
+    background: linear-gradient(135deg, #065f46, #0d9488);
+    border-radius: 16px 16px 0 0; padding: 14px; text-align: center; margin-top: 16px;
+  }
+  .dest-header.phuket { background: linear-gradient(135deg, #1e3a5f, #0ea5e9); }
+  .dest-header h2 { font-size: 20px; }
+  .dest-header .nights { font-size: 12px; opacity: 0.8; margin-top: 2px; }
+  
+  /* Day timeline */
+  .itinerary { margin-top: 12px; }
+  .day-row { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid #1e293b; font-size: 13px; }
+  .day-num { 
+    min-width: 30px; height: 30px; background: #334155; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 11px; flex-shrink: 0;
+  }
+  .day-num.flight { background: #0ea5e933; color: #38bdf8; }
+  .day-num.samui { background: #10b98133; color: #34d399; }
+  .day-num.phuket { background: #6366f133; color: #a78bfa; }
+  .day-date { color: #64748b; font-size: 11px; }
+  
+  /* Buttons */
+  .btn-row { display: flex; gap: 10px; margin-top: 24px; }
+  .btn {
+    flex: 1; padding: 14px; border: none; border-radius: 14px;
+    font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit;
+    transition: all 0.2s;
+  }
+  .btn-next {
+    background: linear-gradient(135deg, #0ea5e9, #6366f1);
+    color: white;
+  }
+  .btn-back { background: #1e293b; color: #94a3b8; border: 1px solid #334155; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn:active:not(:disabled) { transform: scale(0.97); }
+  
+  /* Summary */
+  .summary-box {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border: 1px solid #334155; border-radius: 16px; padding: 20px; margin-top: 16px;
+  }
+  .summary-box h3 { font-size: 16px; margin-bottom: 14px; }
+  .sum-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1e293b; font-size: 14px; }
+  .sum-row:last-child { border: none; }
+  .sum-row .lab { color: #94a3b8; }
+  .sum-row .val { font-weight: 600; }
+  .sum-total { 
+    display: flex; justify-content: space-between;
+    padding-top: 12px; margin-top: 8px; border-top: 2px solid #334155;
+    font-size: 18px; font-weight: 700;
+  }
+  .sum-total .val { color: #0ea5e9; }
+  
+  .chosen-hotel { background: #1e293b; border-radius: 12px; padding: 12px; margin-bottom: 8px; border: 1px solid #334155; }
+  .chosen-hotel .name { font-weight: 700; font-size: 15px; }
+  .chosen-hotel .meta { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+  
+  .send-btn {
+    display: block; width: 100%; padding: 16px; margin-top: 20px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white; border: none; border-radius: 14px;
+    font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  .send-btn:active { transform: scale(0.97); }
+  
+  .notes-box {
+    background: #1e293b; border-radius: 12px; padding: 14px;
+    margin-top: 16px; font-size: 13px; line-height: 1.7; border: 1px solid #334155;
+  }
+  
+  .contact { text-align: center; margin-top: 24px; padding: 16px; font-size: 12px; color: #475569; }
+  .contact a { color: #0ea5e9; text-decoration: none; }
+  
+  .fade-in { animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="header">
+  <div class="agent-badge">✈️ ASD Travel — הצעה אישית</div>
+  <h1>🇹🇭 תאילנד 2026</h1>
+  <div class="sub">סאמר & רוסול — 12 ימים של חוויה</div>
+  <div class="dates">📅 21 אפריל — 3 מאי</div>
+</div>
+
+<div class="container">
+
+  <!-- STEP INDICATORS -->
+  <div class="steps">
+    <div class="step-dot active" id="dot-0"></div>
+    <div class="step-dot" id="dot-1"></div>
+    <div class="step-dot" id="dot-2"></div>
+    <div class="step-dot" id="dot-3"></div>
+  </div>
+  <div class="step-label" id="step-label">שלב 1 מתוך 4 — סקירת המסלול</div>
+
+  <!-- ========== STEP 0: ITINERARY ========== -->
+  <div class="section active" id="step-0">
+    <div class="section-title"><span class="emoji">🗺️</span> המסלול שלכם</div>
+    <div class="itinerary">
+      <div class="day-row"><div class="day-num flight">1</div><div><div>✈️ תל אביב → בנגקוק</div><div class="day-date">21.04 שלישי | IZ 591 | 15:10</div></div></div>
+      <div class="day-row"><div class="day-num samui">2</div><div><div>🏝️ בנגקוק → קו סמואי (Lamai)</div><div class="day-date">22.04 רביעי | PG0115 09:15→10:45</div></div></div>
+      <div class="day-row"><div class="day-num samui">3</div><div><div>🏝️ קו סמואי — Lamai Beach</div><div class="day-date">23.04 חמישי</div></div></div>
+      <div class="day-row"><div class="day-num samui">4</div><div><div>🏝️ קו סמואי — Lamai Beach</div><div class="day-date">24.04 שישי</div></div></div>
+      <div class="day-row"><div class="day-num flight">5</div><div><div>✈️ סמואי → פוקט (Nai Harn)</div><div class="day-date">25.04 שבת | PG0405 12:10→13:10</div></div></div>
+      <div class="day-row"><div class="day-num phuket">6-11</div><div><div>🌊 פוקט — Nai Harn Beach</div><div class="day-date">26.04–01.05 | 6 ימים מלאים</div></div></div>
+      <div class="day-row"><div class="day-num flight">12</div><div><div>✈️ פוקט → בנגקוק → תל אביב</div><div class="day-date">02.05 שבת | PG0284 17:30 → IZ 592 23:55</div></div></div>
+    </div>
+
+    <div class="section-title" style="margin-top:20px"><span class="emoji">✈️</span> פרטי טיסות</div>
+    <div class="flight-card"><div class="flight-row"><div><div class="flight-route">TLV <span class="flight-arrow">→</span> BKK</div><div class="flight-date">21.04 שלישי</div></div><div style="text-align:left"><div class="flight-time">15:10 → 06:30+1</div><div class="flight-detail">11:20 | Arkia IZ 591</div></div></div></div>
+    <div class="flight-card"><div class="flight-row"><div><div class="flight-route">BKK <span class="flight-arrow">→</span> USM</div><div class="flight-date">22.04 רביעי</div></div><div style="text-align:left"><div class="flight-time">09:15 → 10:45</div><div class="flight-detail">1:30 | Bangkok Airways</div></div></div><div class="flight-code">JVUTXU</div></div>
+    <div class="flight-card"><div class="flight-row"><div><div class="flight-route">USM <span class="flight-arrow">→</span> HKT</div><div class="flight-date">25.04 שבת</div></div><div style="text-align:left"><div class="flight-time">12:10 → 13:10</div><div class="flight-detail">1:00 | Bangkok Airways</div></div></div><div class="flight-code">OUFVGM</div></div>
+    <div class="flight-card"><div class="flight-row"><div><div class="flight-route">HKT <span class="flight-arrow">→</span> BKK</div><div class="flight-date">02.05 שבת</div></div><div style="text-align:left"><div class="flight-time">17:30 → 19:00</div><div class="flight-detail">1:30 | Bangkok Airways</div></div></div></div>
+    <div class="flight-card"><div class="flight-row"><div><div class="flight-route">BKK <span class="flight-arrow">→</span> TLV</div><div class="flight-date">02.05 שבת</div></div><div style="text-align:left"><div class="flight-time">23:55 → 07:25+1</div><div class="flight-detail">11:30 | Arkia IZ 592</div></div></div></div>
+    
+    <div class="warning">⚠️ <strong>חיבור צפוף בבנגקוק (22.04):</strong> רק 2:45 שעות בין נחיתה לטיסה פנימית — תעברו ישר לטרמינל!</div>
+
+    <div class="btn-row"><div style="flex:1"></div><button class="btn btn-next" onclick="goStep(1)">הבנתי, בוא נבחר מלונות ←</button></div>
+  </div>
+
+  <!-- ========== STEP 1: SAMUI HOTEL ========== -->
+  <div class="section" id="step-1">
+    <div class="dest-header">
+      <h2>🏝️ קו סמואי — Lamai</h2>
+      <div class="nights">22–25 אפריל | 3 לילות | 2 אורחים</div>
+    </div>
+
+    <p style="font-size:13px; color:#94a3b8; margin:12px 0 8px; text-align:center;">בחרו את המלון שלכם 👇</p>
+
+    <div class="card" onclick="selectHotel('samui', this, 'Silavadee Pool Spa Resort', '$534', '⭐⭐⭐⭐⭐ | $178/לילה', 'https://www.booking.com/hotel/th/silavadee-pool-spa-resort.html?checkin=2026-04-22&checkout=2026-04-25&group_adults=2&no_rooms=1')" id="samui-0">
+      <div class="hotel-top">
+        <div><div class="hotel-name">Silavadee Pool Spa Resort</div><div class="hotel-stars">⭐⭐⭐⭐⭐</div></div>
+        <span class="hotel-badge badge-luxury">יוקרה</span>
+      </div>
+      <div class="hotel-prices">
+        <div><div class="price-label">ללילה</div><div class="price-value">$178</div></div>
+        <div><div class="price-label">סה"כ 3 לילות</div><div class="price-value total">$534</div></div>
+      </div>
+      <div class="hotel-features">🏖️ חוף פרטי על צוק | 🏊 בריכת אינפיניטי | 🧖 ספא Sila | 🍽️ 3 מסעדות<br>💥 מבצע 50% OFF כרגע!</div>
+      <a href="https://www.booking.com/hotel/th/silavadee-pool-spa-resort.html?checkin=2026-04-22&checkout=2026-04-25&group_adults=2&no_rooms=1" class="booking-link" target="_blank" onclick="event.stopPropagation()">🔗 צפה ב-Booking.com</a>
+    </div>
+
+    <div class="card" onclick="selectHotel('samui', this, 'Banyan Tree Samui', '$1,365+', '⭐⭐⭐⭐⭐ | $455/לילה', 'https://www.booking.com/hotel/th/banyan-tree-samui.html?checkin=2026-04-22&checkout=2026-04-25&group_adults=2&no_rooms=1')" id="samui-1">
+      <div class="hotel-top">
+        <div><div class="hotel-name">Banyan Tree Samui</div><div class="hotel-stars">⭐⭐⭐⭐⭐</div></div>
+        <span class="hotel-badge badge-luxury">פרימיום</span>
+      </div>
+      <div class="hotel-prices">
+        <div><div class="price-label">ללילה</div><div class="price-value">$455+</div></div>
+        <div><div class="price-label">סה"כ 3 לילות</div><div class="price-value total">$1,365+</div></div>
+      </div>
+      <div class="hotel-features">🏊 88 וילות עם בריכה פרטית | 🏖️ חוף Lamai Bay | 🧖 ספא עולמי | 🍽️ 5 מסעדות</div>
+      <a href="https://www.booking.com/hotel/th/banyan-tree-samui.html?checkin=2026-04-22&checkout=2026-04-25&group_adults=2&no_rooms=1" class="booking-link" target="_blank" onclick="event.stopPropagation()">🔗 צפה ב-Booking.com</a>
+    </div>
+
+    <div class="card" onclick="selectHotel('samui', this, 'Rockys Boutique Resort', '$285', '⭐⭐⭐⭐ 4.8 | $95/לילה', 'https://www.booking.com/hotel/th/rockysboutiqueresort.html?checkin=2026-04-22&checkout=2026-04-25&group_adults=2&no_rooms=1')" id="samui-2">
+      <div class="hotel-top">
+        <div><div class="hotel-name">Rocky's Boutique Resort</div><div class="hotel-stars">⭐⭐⭐⭐ | 4.8 TripAdvisor</div></div>
+        <span class="hotel-badge badge-value">מומלץ ⭐</span>
+      </div>
+      <div class="hotel-prices">
+        <div><div class="price-label">ללילה</div><div class="price-value">$95</div></div>
+        <div><div class="price-label">סה"כ 3 לילות</div><div class="price-value total">$285</div></div>
+      </div>
+      <div class="hotel-features">🏖️ ישירות על חוף Lamai | 🏊 2 בריכות | 🍽️ מסעדה + הכל walking distance</div>
+      <a href="https://www.booking.com/hotel/th/rockysboutiqueresort.html?checkin=2026-04-22&checkout=2026-04-25&group_adults=2&no_rooms=1" class="booking-link" target="_blank" onclick="event.stopPropagation()">🔗 צפה ב-Booking.com</a>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-back" onclick="goStep(0)">→ חזרה</button>
+      <button class="btn btn-next" id="btn-samui" disabled onclick="goStep(2)">בחרו מלון ←</button>
+    </div>
+  </div>
+
+  <!-- ========== STEP 2: PHUKET HOTEL ========== -->
+  <div class="section" id="step-2">
+    <div class="dest-header phuket">
+      <h2>🌊 פוקט — Nai Harn</h2>
+      <div class="nights">25 אפריל – 2 מאי | 7 לילות | 2 אורחים</div>
+    </div>
+
+    <p style="font-size:13px; color:#94a3b8; margin:12px 0 8px; text-align:center;">בחרו את המלון שלכם 👇</p>
+
+    <div class="card" onclick="selectHotel('phuket', this, 'The Nai Harn', '$1,600', '⭐⭐⭐⭐⭐ LHW | $228/לילה', 'https://www.booking.com/hotel/th/the-nai-harn.html?checkin=2026-04-25&checkout=2026-05-02&group_adults=2&no_rooms=1')" id="phuket-0">
+      <div class="hotel-top">
+        <div><div class="hotel-name">The Nai Harn</div><div class="hotel-stars">⭐⭐⭐⭐⭐ | Leading Hotels of the World</div></div>
+        <span class="hotel-badge badge-luxury">יוקרה</span>
+      </div>
+      <div class="hotel-prices">
+        <div><div class="price-label">ללילה</div><div class="price-value">$206-249</div></div>
+        <div><div class="price-label">סה"כ 7 לילות</div><div class="price-value total">$1,440-1,740</div></div>
+      </div>
+      <div class="hotel-features">🏖️ Nai Harn Beach | 🍽️ Cosmo, Rock Salt, PRIME, Reflections Rooftop Bar<br>🧖 Puriti Detox Spa | הכי יוקרתי באי</div>
+      <a href="https://www.booking.com/hotel/th/the-nai-harn.html?checkin=2026-04-25&checkout=2026-05-02&group_adults=2&no_rooms=1" class="booking-link" target="_blank" onclick="event.stopPropagation()">🔗 צפה ב-Booking.com</a>
+    </div>
+
+    <div class="card" onclick="selectHotel('phuket', this, 'Wyndham Grand Nai Harn', '$1,400', '⭐⭐⭐⭐⭐ | $200/לילה', 'https://www.booking.com/hotel/th/wyndham-grand-nai-harn-beach-phuket.html?checkin=2026-04-25&checkout=2026-05-02&group_adults=2&no_rooms=1')" id="phuket-1">
+      <div class="hotel-top">
+        <div><div class="hotel-name">Wyndham Grand Nai Harn</div><div class="hotel-stars">⭐⭐⭐⭐⭐</div></div>
+        <span class="hotel-badge badge-luxury">יוקרה</span>
+      </div>
+      <div class="hotel-prices">
+        <div><div class="price-label">ללילה</div><div class="price-value">$150-250</div></div>
+        <div><div class="price-label">סה"כ 7 לילות</div><div class="price-value total">$1,050-1,750</div></div>
+      </div>
+      <div class="hotel-features">🏊 בריכות | 🅿️ חניה חינם | 📶 WiFi | 🍽️ מסעדות | חדש ומודרני</div>
+      <a href="https://www.booking.com/hotel/th/wyndham-grand-nai-harn-beach-phuket.html?checkin=2026-04-25&checkout=2026-05-02&group_adults=2&no_rooms=1" class="booking-link" target="_blank" onclick="event.stopPropagation()">🔗 צפה ב-Booking.com</a>
+    </div>
+
+    <div class="card" onclick="selectHotel('phuket', this, 'Chanalai Garden Resort', '$570', '⭐⭐⭐⭐ | $81/לילה', 'https://www.booking.com/hotel/th/tropicalgardenresort.html?checkin=2026-04-25&checkout=2026-05-02&group_adults=2&no_rooms=1')" id="phuket-2">
+      <div class="hotel-top">
+        <div><div class="hotel-name">Chanalai Garden Resort</div><div class="hotel-stars">⭐⭐⭐⭐</div></div>
+        <span class="hotel-badge badge-value">ערך מעולה ⭐</span>
+      </div>
+      <div class="hotel-prices">
+        <div><div class="price-label">ללילה</div><div class="price-value">$76-88</div></div>
+        <div><div class="price-label">סה"כ 7 לילות</div><div class="price-value total">$532-616</div></div>
+      </div>
+      <div class="hotel-features">🌊 נוף לים | 🏊 2 בריכות | קרוב ל-Kata Beach | ערך מצוין ל-7 לילות</div>
+      <a href="https://www.booking.com/hotel/th/tropicalgardenresort.html?checkin=2026-04-25&checkout=2026-05-02&group_adults=2&no_rooms=1" class="booking-link" target="_blank" onclick="event.stopPropagation()">🔗 צפה ב-Booking.com</a>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-back" onclick="goStep(1)">→ חזרה</button>
+      <button class="btn btn-next" id="btn-phuket" disabled onclick="goStep(3)">בחרו מלון ←</button>
+    </div>
+  </div>
+
+  <!-- ========== STEP 3: SUMMARY ========== -->
+  <div class="section" id="step-3">
+    <div class="section-title"><span class="emoji">📋</span> סיכום הבחירות שלכם</div>
+    
+    <div style="margin-top:12px">
+      <div style="font-size:13px; color:#64748b; margin-bottom:6px;">🏝️ קו סמואי — 3 לילות</div>
+      <div class="chosen-hotel" id="sum-samui">
+        <div class="name" id="sum-samui-name">—</div>
+        <div class="meta" id="sum-samui-meta">—</div>
+      </div>
+      
+      <div style="font-size:13px; color:#64748b; margin-bottom:6px; margin-top:14px;">🌊 פוקט — 7 לילות</div>
+      <div class="chosen-hotel" id="sum-phuket">
+        <div class="name" id="sum-phuket-name">—</div>
+        <div class="meta" id="sum-phuket-meta">—</div>
+      </div>
+    </div>
+
+    <div class="summary-box">
+      <h3>💰 סיכום תקציב (לשני אנשים)</h3>
+      <div class="sum-row"><span class="lab">✈️ טיסות בינלאומיות</span><span class="val">שולם ✅</span></div>
+      <div class="sum-row"><span class="lab">✈️ טיסות פנימיות (3 טיסות)</span><span class="val">$978</span></div>
+      <div class="sum-row"><span class="lab">🏝️ סמואי — <span id="sum-samui-price2">—</span></span><span class="val" id="sum-samui-val">—</span></div>
+      <div class="sum-row"><span class="lab">🌊 פוקט — <span id="sum-phuket-price2">—</span></span><span class="val" id="sum-phuket-val">—</span></div>
+      <div class="sum-total"><span>סה"כ הערכה</span><span class="val" id="sum-grand-total">—</span></div>
+    </div>
+
+    <div class="notes-box">
+      <strong>📋 חשוב לזכור:</strong><br>
+      ✅ אישור טיסת חזרה 72 שעות לפני (29 אפריל)<br>
+      ✅ כבודה: 20kg + 8kg יד לכל אדם<br>
+      ✅ סוכנות: Safar Aura — Adam Mulla 054-450-7325<br>
+      ⚠️ חיבור בנגקוק: רק 2:45 שעות — ישר לטרמינל!
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-back" onclick="goStep(2)">→ שנה בחירה</button>
+    </div>
+
+    <button class="send-btn" onclick="sendChoices()">
+      ✅ שלח את הבחירות שלי
+    </button>
+    
+    <div id="sent-msg" style="display:none; text-align:center; margin-top:16px; padding:16px; background:#10b98122; border-radius:12px; border:1px solid #10b98144;">
+      <div style="font-size:24px; margin-bottom:8px;">🎉</div>
+      <div style="font-size:15px; font-weight:700; color:#34d399;">הבחירות נשלחו בהצלחה!</div>
+      <div style="font-size:13px; color:#94a3b8; margin-top:6px;">ניצור איתכם קשר לסגירת ההזמנה</div>
+    </div>
+  </div>
+
+  <div class="contact">
+    ASD Travel ✈️ | הוכן במיוחד עבור סאמר & רוסול<br>
+    <a href="https://wa.me/972544507325">📞 WhatsApp — Adam Mulla</a>
+  </div>
+
+</div>
+
+<script>
+let currentStep = 0;
+const choices = { samui: null, phuket: null };
+const labels = ['שלב 1 מתוך 4 — סקירת המסלול', 'שלב 2 מתוך 4 — בחירת מלון בסמואי', 'שלב 3 מתוך 4 — בחירת מלון בפוקט', 'שלב 4 מתוך 4 — סיכום ואישור'];
+
+function goStep(n) {
+  document.getElementById('step-' + currentStep).classList.remove('active');
+  document.getElementById('step-' + n).classList.add('active');
+  document.getElementById('step-' + n).classList.add('fade-in');
+  
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('dot-' + i);
+    dot.className = 'step-dot' + (i === n ? ' active' : (i < n ? ' done' : ''));
+  }
+  document.getElementById('step-label').textContent = labels[n];
+  currentStep = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  if (n === 3) updateSummary();
+}
+
+function selectHotel(dest, el, name, total, meta, url) {
+  const cards = el.parentElement.querySelectorAll('.card');
+  cards.forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  
+  choices[dest] = { name, total, meta, url };
+  
+  const btn = document.getElementById('btn-' + dest);
+  btn.disabled = false;
+  btn.textContent = 'אישור — ' + name + ' ←';
+}
+
+function updateSummary() {
+  if (choices.samui) {
+    document.getElementById('sum-samui-name').textContent = choices.samui.name;
+    document.getElementById('sum-samui-meta').textContent = choices.samui.meta;
+    document.getElementById('sum-samui-val').textContent = choices.samui.total;
+    document.getElementById('sum-samui-price2').textContent = choices.samui.name;
+  }
+  if (choices.phuket) {
+    document.getElementById('sum-phuket-name').textContent = choices.phuket.name;
+    document.getElementById('sum-phuket-meta').textContent = choices.phuket.meta;
+    document.getElementById('sum-phuket-val').textContent = choices.phuket.total;
+    document.getElementById('sum-phuket-price2').textContent = choices.phuket.name;
+  }
+  
+  // Calculate rough total
+  const s = choices.samui ? parseInt(choices.samui.total.replace(/[^0-9]/g, '')) : 0;
+  const p = choices.phuket ? parseInt(choices.phuket.total.replace(/[^0-9]/g, '')) : 0;
+  const total = 978 + s + p;
+  document.getElementById('sum-grand-total').textContent = '~$' + total.toLocaleString();
+}
+
+function sendChoices() {
+  const msg = '🇹🇭 *בחירות מלון — תאילנד 2026*\n\n' +
+    '🏝️ *סמואי:* ' + (choices.samui ? choices.samui.name + ' (' + choices.samui.total + ')' : 'לא נבחר') + '\n' +
+    '🌊 *פוקט:* ' + (choices.phuket ? choices.phuket.name + ' (' + choices.phuket.total + ')' : 'לא נבחר') + '\n\n' +
+    '✈️ טיסות פנימיות: $978\n' +
+    '💰 סה"כ הערכה: ' + document.getElementById('sum-grand-total').textContent;
+  
+  const encoded = encodeURIComponent(msg);
+  const waUrl = 'https://wa.me/972544507325?text=' + encoded;
+  
+  document.querySelector('.send-btn').style.display = 'none';
+  document.getElementById('sent-msg').style.display = 'block';
+  
+  setTimeout(() => { window.open(waUrl, '_blank'); }, 500);
+}
+</script>
+
+</body>
+</html>
